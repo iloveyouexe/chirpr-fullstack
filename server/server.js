@@ -1,17 +1,17 @@
-import * as path from 'path';
-import * as express from 'express';
-import apiRouter from './routes';
+import * as path from "path";
+import * as express from "express";
+import apiRouter from "./routes/index.js";
 
 const app = express();
 
-let p = path.join(__dirname, '../public');
+let p = path.join(__dirname, "../public");
 console.log(p);
 
 app.use(express.json());
 app.use(express.static(p));
-app.use(apiRouter);
+app.use("/api", apiRouter);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
-    console.log(`Server listening on port: ${port}`);
+  console.log(`Server listening on port: ${port}`);
 });
