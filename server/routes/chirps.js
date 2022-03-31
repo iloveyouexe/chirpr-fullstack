@@ -2,15 +2,9 @@ const express = require("express");
 const router = express.Router();
 import db from "../db";
 
-// const chirpsStore = require("../chirpstore.js");
-// no more chirpstore! install mysql from npm and configure the routes to use that instead of chirpstore.
-
-// // REST API
-
 // Read
 router.get("/:id?", async (req, res) => {
   const id = req.params.id;
-
   try {
     if (id) {
       res.json(await db.chirpr.one(id));
@@ -19,34 +13,42 @@ router.get("/:id?", async (req, res) => {
     }
   } catch (e) {
     console.log(e);
-    res.send(500);
+    res.sendStatus(500);
   }
 });
 
 // Create
 router.post("/", async (req, res) => {
   const body = req;
-
   try {
-    res.json(await db.chirpr.one(body));
+    res.json(await db.chirpr.post(body.userid, body.content, body.location));
   } catch (e) {
     console.log(e);
     res.send(500);
   }
 });
 
-// // Delete
-// router.delete("/:id", (req, res) => {
-//   const id = req.params.id;
-//   // chirpsStore.DeleteChirp(id);
-//   res.sendStatus(200);
-// });
+// Delete
+router.delete("/:id", async (req, res) => {
+  const id = req.params.id;
+  try {
+    res.json(await db.chirpr.del(id));
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(200);
+  }
+});
 
-// // Update
-// router.put("/:id", (req, res) => {
-//   const id = req.params.id;
-//   const body = req.body;
+// Update
+router.put("/:id", async (req, res) => {
+  const id = req.params.id;
+  const content = req.body.content;
+  try {
+    res.json(await db.chirpr.update(id, content));
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+  }
+});
 
-//   // chirpsStore.UpdateChirp(id, body);
-//   res.sendStatus(200);
 export default router;
