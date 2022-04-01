@@ -1,6 +1,6 @@
-const express = require("express");
-const router = express.Router();
+import * as express from "express";
 import db from "../db";
+const router = express.Router();
 
 // Read
 router.get("/:id?", async (req, res) => {
@@ -19,12 +19,17 @@ router.get("/:id?", async (req, res) => {
 
 // Create
 router.post("/", async (req, res) => {
-  const body = req;
   try {
-    res.json(await db.chirpr.post(body.userid, body.content, body.location));
-  } catch (e) {
-    console.log(e);
-    res.send(500);
+    const body = req.body;
+
+    const dbRes = await db.chirpr.insert(
+      body.userid,
+      body.content,
+      body.location
+    );
+    res.status(200).send(dbRes);
+  } catch (error) {
+    console.log(error);
   }
 });
 
@@ -32,22 +37,24 @@ router.post("/", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   const id = req.params.id;
   try {
-    res.json(await db.chirpr.del(id));
+    const dbRes = await db.chirpr.destroy(id);
+    res.status(200).send(dbRes);
   } catch (e) {
     console.log(e);
-    res.sendStatus(200);
   }
 });
 
 // Update
 router.put("/:id", async (req, res) => {
-  const id = req.params.id;
-  const content = req.body.content;
   try {
-    res.json(await db.chirpr.update(id, content));
+    const id = req.params.id;
+    const content = req.body.content;
+
+    const dbRes = await db.chirpr.update(id, content);
+
+    res.status(200).json(dbRes);
   } catch (e) {
     console.log(e);
-    res.sendStatus(500);
   }
 });
 

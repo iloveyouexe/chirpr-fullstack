@@ -12,12 +12,11 @@ export const Connection = mysql.createConnection({
 export const Query = (query, values) => {
   return new Promise((resolve, reject) => {
     Connection.query(query, values, (err, results) => {
-      if (err) return reject(err);
-      resolve(results)
+      if (err) throw err;
+      resolve(results);
     });
   });
 };
-
 
 export default {
   chirpr,
