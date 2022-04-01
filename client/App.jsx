@@ -1,31 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import moment from "moment";
 import ChirpCard from "./components/ChirpCard.jsx";
+import 'babel-polyfill'
 
 const App = () => {
   const [username, setUsername] = useState("");
   const [message, setMessage] = useState("");
-  const [chirps, setChirps] = useState([
-    {
-      id: uuidv4(),
-      username: "Josh",
-      message: "This is the chirp body!",
-      created: moment().format("dddd, MMMM Do YYYY, h:mm:ss a"),
-    },
-    {
-      id: uuidv4(),
-      username: "Haylee",
-      message: "Hello!",
-      created: moment().format("dddd, MMMM Do YYYY, h:mm:ss a"),
-    },
-    {
-      id: uuidv4(),
-      username: "Garrett",
-      message: "I'm not mad!",
-      created: moment().format("dddd, MMMM Do YYYY, h:mm:ss a"),
-    },
-  ]);
+  const [chirps, setChirps] = useState([]);
 
   const handleUsernameChange = (e) => setUsername(e.target.value);
   const handleMessageChange = (e) => setMessage(e.target.value);
@@ -39,7 +21,28 @@ const App = () => {
       created: moment().format("dddd, MMMM Do YYYY, h:mm:ss a"),
     };
 
-    setChirps([...chirps, newChirp]);
+
+  };
+
+
+    useEffect(() => {
+    fetch('http://localhost:3000/api/chirps')
+    .then(response => {
+      console.log(response);
+      return response.json();
+    })
+    .then(allChirps => {
+      console.log(allChirps[0]);
+      setChirps(allChirps);
+    });
+ 
+  }, []);
+
+
+  const deleteChirp = (id) => {
+    fetch(`https://localhost:3000/api/chirps/${id}`, { method: "DELETE" })
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
   };
 
   return (
@@ -70,8 +73,8 @@ const App = () => {
               />
               <textarea
                 className="form-control mb-2"
-                              aria-label="With textarea"
-                              placeholder="(500 characters max)"
+                aria-label="With textarea"
+                placeholder="(500 characters max)"
                 value={message}
                 onChange={handleMessageChange}
                 cols="30"
@@ -86,9 +89,11 @@ const App = () => {
             {chirps.map((chirp) => (
               <ChirpCard
                 key={chirp.id}
-                username={chirp.username}
-                message={chirp.message}
-                created={chirp.created}
+                id={chirp.id}
+                userid={chirp.userid}
+                content={chirp.content}
+                created={chirp._created}
+                deleteChirp={chirp.deleteChirp}
               />
             ))}
           </div>

@@ -1,13 +1,20 @@
-import React from 'react'
+import React from "react";
 
-const ChirpCard = ({username, message, created}) => {
-    return (
-        <>
-            <h3>{username}</h3>
-            <p>{message}</p>
-            <small>{created}</small>
-        </>
-    )
-}
+const ChirpCard = ({ userid, content, _created, deleteChirp, id }) => {
+  return (
+    <>
+      <h3>{userid}</h3>
+      <p>{content}</p>
+      <small>{_created}</small>
+      <button
+        onClick={() => deleteChirp(id)}
+        className="btn btn-dark"
+        type="submit"
+      >
+        Delete
+      </button>
+    </>
+  );
+};
 
 export default ChirpCard;
